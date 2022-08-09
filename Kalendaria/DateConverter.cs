@@ -14,35 +14,22 @@ namespace Kalendaria
 {
     internal class DateConverter
     {
-        //private Type CalType;
-
         public CultureInfo? CurrentCulture;
-
-        //private Calendar? CurrCalendar;
-
-        //private DateTimeFormatInfo? CurrDateFormat;
 
         #region Constructors
 
         /// <summary>
-        /// Creates a default GregorianCalendar
+        /// Uses the user's current culture.
         /// </summary>
         public DateConverter()
         {
-            //CalType = typeof(GregorianCalendar);
-            //CurrCalendar = (Calendar?)Activator.CreateInstance(CalType);
+            this.CurrentCulture = CultureInfo.CurrentCulture;
         }
 
         /// <summary>
-        /// Creates a calendar based on user selection
+        /// Uses the user-selected culture.
         /// </summary>
-        /// <param name="type">The Type of the calendar that the user has selected</param>
-        public DateConverter(Type type)
-        {
-            //CalType = type;
-            //CurrCalendar = (Calendar?)Activator.CreateInstance(CalType);
-        }
-
+        /// <param name="currentCulture">The culture that the user has selected</param>
         public DateConverter(CultureInfo currentCulture)
         {
             this.CurrentCulture = currentCulture;
@@ -56,23 +43,25 @@ namespace Kalendaria
         /// <returns>Number of days in the month</returns>
         public int DaysInMonth()
         {
-            //var today = new DateTime();
-            //return CurrCalendar!.GetDaysInMonth(today.Year, today.Month);
-            return 0;
+            var now = new DateTime();
+            int qty = -1;
+            if (CurrentCulture != null)
+                qty = CurrentCulture.Calendar.GetDaysInMonth(now.Year, now.Month);
+            return qty;
         }
 
         /// <summary>
-        /// Retrieves the number of days in the current week
+        /// Retrieves an array of names of days of the week for the selected culture. Length of array determines length of week.
         /// </summary>
-        /// <returns></returns>
-        public int WeeksInMonth()
+        /// <returns>Array of names of days of the week. If array is length 0, no names were found.</returns>
+        public string[] DaysInWeek()
         {
-            //var today = new DateTime();
-
-
-            return 0;
+            string[] days = new string[0];
+            if (CurrentCulture != null)
+                days = CurrentCulture.DateTimeFormat.DayNames;
+            return days;
         }
-
+        
 
     }
 }

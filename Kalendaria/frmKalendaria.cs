@@ -12,15 +12,26 @@ namespace Kalendaria
 
         private frmPreferences PrefsForm;
 
+        private UserSettings Settings;
+
         public frmKalendaria()
         {
             InitializeComponent();
-            Converter = new DateConverter();
+
             PrefsForm = new frmPreferences();
 
-            //Force selection of initial culture.
-            if (Converter.CurrentCulture == null)
-                PrefsForm.ShowDialog();
+            Settings = new UserSettings();
+
+            var culture = Settings.SelectedCulture;
+            if (culture == null)
+            {
+                Converter = new DateConverter();
+                DialogResult result = MessageBox.Show("You do not have a culture or calendar selected. Do you want to choose one now?", "Select culture/calendar?", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                    PrefsForm.ShowDialog();
+            }
+            else
+                Converter = new DateConverter(culture);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -44,7 +55,7 @@ namespace Kalendaria
         /// <param name="calTrans"></param>
         private void PopulateCalendar(DateConverter calTrans)
         {
-
+            
         }
 
         public void UpdateCulture(CultureInfo? ci)
@@ -52,8 +63,22 @@ namespace Kalendaria
             if (ci == null) return;
 
             this.Converter.CurrentCulture = ci;
-            PopulateCalendar(this.Converter);
+            Settings.SelectedCulture = ci;
+            Settings.Save();
         }
+
+        private void tsmPreferences_Click(object sender, EventArgs e)
+        {
+            PrefsForm.ShowDialog();
+        }
+
+        private void tsmExit_Click(object sender, EventArgs e)
+        {
+            if (Converter.CurrentCulture != null)
+                Settings.SelectedCulture = Converter.CurrentCulture;
+            Application.Exit();
+        }
+        
 
 
     }

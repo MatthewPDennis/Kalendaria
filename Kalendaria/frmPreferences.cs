@@ -50,9 +50,9 @@ namespace Kalendaria
             foreach (CultureInfo ci in sorted)
             {
                 //Skip empty strings and anything with parentheses
+                // || (ci.DisplayName.Contains('('))
                 if ((String.IsNullOrEmpty(ci.DisplayName)) ||
-                    (String.IsNullOrWhiteSpace(ci.DisplayName)) ||
-                    (ci.DisplayName.Contains('(')))
+                    (String.IsNullOrWhiteSpace(ci.DisplayName)))
                     continue;
 
                 CheckBox cb = new CheckBox();
